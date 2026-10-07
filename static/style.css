@@ -1,0 +1,54 @@
+:root {
+    --bg: #f8f9fa;
+    --text: #212529;
+    --card-bg: #ffffff;
+}
+
+html[data-theme="dark"] {
+    --bg: #1a1d21;
+    --text: #e9ecef;
+    --card-bg: #23272b;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .list-group-item {
+    background: var(--card-bg);
+    color: var(--text);
+    border-color: #343a40;
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+    background: #2c3136;
+    color: var(--text);
+    border-color: #444a51;
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+    color: #8c939a;
+}
+
+.task-item.overdue {
+    background: #ffe5e5;
+}
+html[data-theme="dark"] .task-item.overdue {
+    background: #5c1f1f;
+}
+
+.task-item.today {
+    background: #fff8d6;
+}
+html[data-theme="dark"] .task-item.today {
+    background: #5c4a1f;
+}
+
+.task-item.done strong {
+    text-decoration: line-through;
+    opacity: 0.6;
+}

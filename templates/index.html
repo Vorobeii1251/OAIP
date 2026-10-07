@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Список задач{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Выполнено {{ completed }} из {{ total }}</h4>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Новая задача</h5>
+            <form method="post" action="{{ url_for('add') }}">
+                {{ form.hidden_tag() }}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control", placeholder="Что нужно сделать?") }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.deadline.label(class="form-label") }}
+                        {{ form.deadline(class="form-control") }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.priority.label(class="form-label") }}
+                        {{ form.priority(class="form-select") }}
+                    </div>
+                    <div class="col-12">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows=2) }}
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# макрос для вывода блока #}
+    {% macro render_group(title, items, css_class) %}
+        {% if items %}
+            <h5 class="mt-4">{{ title }} <span class="badge bg-secondary">{{ items|length }}</span></h5>
+            <ul class="list-group mb-2">
+                {% for task in items %}
+                    <li class="list-group-item task-item {{ css_class }} d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <form method="post" action="{{ url_for('toggle', task_id=task.id) }}" class="m-0">
+                                    <button class="btn btn-sm btn-outline-success" title="Отметить">
+                                        {% if task.is_done %}↩{% else %}✔{% endif %}
+                                    </button>
+                                </form>
+                                <strong {% if task.is_done %}style="text-decoration: line-through; opacity: .6;"{% endif %}>
+                                    {{ task.title }}
+                                </strong>
+                                <span class="badge
+                                    {% if task.priority == 'high' %}bg-danger
+                                    {% elif task.priority == 'medium' %}bg-warning text-dark
+                                    {% else %}bg-info text-dark{% endif %}">
+                                    {{ task.priority }}
+                                </span>
+                            </div>
+                            {% if task.description %}
+                                <div class="text-muted small mt-1">{{ task.description }}</div>
+                            {% endif %}
+                            <div class="text-muted small mt-1">
+                                Дедлайн: {{ task.deadline.strftime('%d.%m.%Y %H:%M') }}
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="{{ url_for('edit', task_id=task.id) }}">✏</a>
+                            <form method="post" action="{{ url_for('delete', task_id=task.id) }}"
+                                  onsubmit="return confirm('Удалить задачу?');" class="m-0">
+                                <button class="btn btn-sm btn-outline-danger">🗑</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endmacro %}
+
+    {{ render_group('Просроченные', overdue, 'overdue') }}
+    {{ render_group('Сегодня', today, 'today') }}
+    {{ render_group('На этой неделе', this_week, '') }}
+    {{ render_group('Позже', later, '') }}
+    {{ render_group('Выполненные', done, 'done') }}
+
+    {% if not (overdue or today or this_week or later or done) %}
+        <div class="alert alert-secondary">Задач пока нет</div>
+    {% endif %}
+
+{% endblock %}
