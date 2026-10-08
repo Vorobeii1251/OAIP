@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}MARS ROVER · Телеметрия{% endblock %}
+
+{% block content %}
+
+    <section class="battery-section">
+        <div class="battery-label">
+            заряд батареи:
+            <span class="battery-value
+                {% if battery < 20 %}text-red
+                {% elif battery < 50 %}text-orange
+                {% else %}text-green{% endif %}">
+                {{ (battery / 100 * 100) | round }}%
+            </span>
+        </div>
+
+        <div class="battery-bar">
+            <div class="battery-fill
+                {% if battery < 20 %}bg-red
+                {% elif battery < 50 %}bg-orange
+                {% else %}bg-green{% endif %}"
+                style="width: {{ (battery / 100 * 100) | round }}%;">
+            </div>
+        </div>
+    </section>
+
+    <h2 class="section-title">Подсистемы ровера</h2>
+
+    {% if subsystems %}
+        <div class="grid">
+            {% for s in subsystems %}
+                <div class="card
+                    {% if s.status == 'ok' %}card-ok
+                    {% elif s.status == 'warning' %}card-warning
+                    {% elif s.status == 'critical' %}card-critical
+                    {% endif %}">
+
+                    <div class="card-header">
+                        <span class="card-name">{{ s.name }}</span>
+                        {% if s.status == 'critical' %}
+                            <span class="badge badge-critical">требует внимания</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-value">
+                        {{ s.value }} <span class="unit">{{ s.unit }}</span>
+                        {% if s.value > 90 %}
+                            <span class="badge badge-heat">перегрев</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-status">
+                        {% if s.status == 'ok' %}● OK
+                        {% elif s.status == 'warning' %}● WARNING
+                        {% elif s.status == 'critical' %}● CRITICAL
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            Все системы отключены
+        </div>
+    {% endif %}
+
+{% endblock %}
