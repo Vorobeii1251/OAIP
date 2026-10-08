@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Счётчик посещений{% endblock %}
+
+{% block content %}
+    <div class="counter">
+        <div class="counter-label">Вы посетили эту страницу:</div>
+        <div class="counter-value">{{ visits }}</div>
+        <div class="counter-label">
+            {% if visits == 1 %}раз{% else %}раз{% endif %}
+        </div>
+    </div>
+
+    <div class="actions">
+        <a class="btn btn-primary" href="{{ url_for('index') }}">Обновить</a>
+
+        <form method="post" action="{{ url_for('reset') }}"
+              onsubmit="return confirm('Сбросить счётчик посещений?');">
+            <button type="submit" class="btn btn-danger">Сбросить счётчик</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Счётчик посещений{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Счётчик посещений</h1>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+</body>
+</html>
