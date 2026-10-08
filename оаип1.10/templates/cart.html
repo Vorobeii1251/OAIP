@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+    <h2>Корзина</h2>
+
+    {% if items %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Кол-во</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>{{ item.price }} ₽</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.sum }} ₽</td>
+                        <td>
+                            <form method="post" action="{{ url_for('remove_from_cart', product_id=item.id) }}">
+                                <button type="submit" class="btn-remove">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><b>Итого:</b></td>
+                    <td colspan="2"><b>{{ stats.total_sum }} ₽</b></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="stats">
+            <h3>Статистика корзины</h3>
+            <ul>
+                <li>Всего товаров: <b>{{ stats.total_items }}</b></li>
+                <li>Уникальных позиций: <b>{{ stats.unique_items }}</b></li>
+                <li>Итоговая сумма: <b>{{ stats.total_sum }} ₽</b></li>
+            </ul>
+        </div>
+
+        <form method="post" action="{{ url_for('clear_cart') }}"
+              onsubmit="return confirm('Очистить корзину полностью?');">
+            <button type="submit" class="btn-clear">Очистить корзину</button>
+        </form>
+    {% else %}
+        <div class="empty-cart">
+            <p>Ваша корзина пуста</p>
+            <p>Самое время что-нибудь выбрать!</p>
+            <a href="{{ url_for('index') }}">Перейти в каталог</a>
+        </div>
+    {% endif %}
+{% endblock %}
